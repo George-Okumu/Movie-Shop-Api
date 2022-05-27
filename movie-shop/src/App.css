@@ -41,3 +41,13 @@
 .mine{
   background-image: url("https://i.ytimg.com/vi/DRCEto_MHSI/maxresdefault.jpg") ;
 }
+
+.active, .fillme {
+  color: #fff;
+  background: blue;
+  fill: white;
+}
+
+.borderme{
+  border-color: transparent;
+}
