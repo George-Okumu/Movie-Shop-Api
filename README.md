@@ -35,7 +35,10 @@ $ rails db:reset
 
 # Movie-Shop Client
 Build with react js
+
 Created  through : `npx create-react-app --use-npm `
+
+Styled Mostly using : `Tailwind css`,  [Check configuration](https://tailwindcss.com/docs/guides/create-react-app)
 
 - [How to proxy](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
 
