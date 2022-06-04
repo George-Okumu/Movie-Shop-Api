@@ -38,15 +38,20 @@
 }
 
 /* style="background-image: url('images/inception.jpg');" */
-.mine{
+/* .mine{
   background-image: url("https://i.ytimg.com/vi/DRCEto_MHSI/maxresdefault.jpg") ;
-}
+} */
 
-.active, .fillme {
+.active {
   color: #fff;
-  background: blue;
+  background-color: blue;
   fill: white;
 }
+.inactive, .fillme{
+  fill: blue;
+}
+
+
 
 .borderme{
   border-color: transparent;

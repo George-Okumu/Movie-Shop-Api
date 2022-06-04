@@ -1,37 +1,106 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import LeftSideBar from "./LeftSideBar";
+import Rightside from "./RightSide";
 
 function MovieForm() {
+    const [movieData, setMovieData] = useState({
+        title: "",
+        year: "",
+        length: "",
+        description: "",
+        poster_url: "",
+        category: "",
+        director: "",
+        female_director: false,
+        discount: false
+    })
+
+    const [errors, setErrors] = useState([]);
+
+    function handleChange(e) {
+        const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+        setMovieData({
+            ...movieData, [e.target.id]: value,
+        });
+    }
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        fetch("/movies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(movieData),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    response.json().then((newMovie) => console.log(newMovie));
+                } else {
+                    response.json().then((errorData) => setErrors(errorData.errors));
+                }
+            })
+
+    }
     return (
         <div className="flex min-h-screen  2xl:max-w-screen-2xl 2xl:mx-auto 2xl:border-x-2 2xl:border-gray-200 dark:2xl:border-zinc-700">
-            <LeftSideBar />
+            <aside className=" w-1/6 py-10 pl-10  min-w-min  border-r border-gray-300 dark:border-zinc-700  hidden md:block ">
+                <LeftSideBar />
+            </aside>
 
             <main class="flex-1 py-10  px-5 sm:px-10">
-                {/* <header class=" font-bold text-lg flex items-center  gap-x-3 md:hidden mb-12 ">
-                    <span class="mr-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-700 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                    </span>
-                    <svg className="h-8 w-8 fill-red-600 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M10 15.5v-7c0-.41.47-.65.8-.4l4.67 3.5c.27.2.27.6 0 .8l-4.67 3.5c-.33.25-.8.01-.8-.4Zm11.96-4.45c.58 6.26-4.64 11.48-10.9 10.9 -4.43-.41-8.12-3.85-8.9-8.23 -.26-1.42-.19-2.78.12-4.04 .14-.58.76-.9 1.31-.7v0c.47.17.75.67.63 1.16 -.2.82-.27 1.7-.19 2.61 .37 4.04 3.89 7.25 7.95 7.26 4.79.01 8.61-4.21 7.94-9.12 -.51-3.7-3.66-6.62-7.39-6.86 -.83-.06-1.63.02-2.38.2 -.49.11-.99-.16-1.16-.64v0c-.2-.56.12-1.17.69-1.31 1.79-.43 3.75-.41 5.78.37 3.56 1.35 6.15 4.62 6.5 8.4ZM5.5 4C4.67 4 4 4.67 4 5.5 4 6.33 4.67 7 5.5 7 6.33 7 7 6.33 7 5.5 7 4.67 6.33 4 5.5 4Z"></path>
-                    </svg>
-                    <div className="tracking-wide dark:text-white flex-1">MMovie<span class="text-red-600">.</span></div>
+                <div class="max-w-2xl mx-auto bg-white p-10">
 
-                    <div className="relative items-center content-center flex ml-2">
-                        <span className="text-gray-400 absolute left-4 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </span>
-                        <input type="text" className="text-xs ring-1 bg-transparent ring-gray-200 dark:ring-zinc-600 focus:ring-red-300 pl-10 pr-5 text-gray-600 dark:text-white  py-3 rounded-full w-full outline-none focus:ring-1" placeholder="Search ..." />
-                    </div>
-                </header> */}
-
-                
-                <div>
+                    <form onSubmit={handleSubmit}>
+                        <div classname="grid gap-6 mb-6 lg:grid-cols-2">
+                            <div>
+                                <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Title</label>
+                                <input type="text" id="title" value={movieData.title} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Movie Title"/>
+                            </div>
+                            <div>
+                                <label htmlFor="year" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Year of Release</label>
+                                <input type="number" id="year" value={movieData.year} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Year of release"/>
+                            </div>
+                            <div>
+                                <label htmlFor="length" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Length</label>
+                                <input type="number" id="length" value={movieData.length} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Length"/>
+                            </div>
+                            <div>
+                                <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
+                                <input type="text" id="description" value={movieData.description} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Description"/>
+                            </div>
+                            <div>
+                                <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Poster URL</label>
+                                <input type="url" id="poster_url" value={movieData.poster_url} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Poster url"/>
+                            </div>
+                            <div>
+                                <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Category</label>
+                                <input type="text" id="category" value={movieData.category} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Category"/>
+                            </div>
+                        </div>
+                        <div className="mb-6">
+                            <label htmlFor="director" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Director</label>
+                            <input type="name" id="director" value={movieData.director} onChange={handleChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Director"/>
+                        </div>
+                        <div className="mb-6">
+                            <label htmlFor="female-director" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Female director?
+                                <input type="checkbox" id="female-director" onChange={handleChange} checked={movieData.female_director} />
+                            </label>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="discount" className="block mb-0 text-sm font-medium text-gray-900 dark:text-gray-300">Discount?
+                                <input type="checkbox" onChange={handleChange} id="discount" checked={movieData.discount} />
+                            </label>
+                        </div>
+                        <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                    </form>
                 </div>
             </main>
+
+            {/* Right side bar */}
+            <aside className=" w-1/5 py-10 px-10  min-w-min  border-l border-gray-300 dark:border-zinc-700 hidden lg:block ">
+                <Rightside />
+            </aside>
 
         </div>
     )
